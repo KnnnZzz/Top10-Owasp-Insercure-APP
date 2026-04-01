@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Entrar</h2>
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Nome de utilizador</label>
+      <input type="text" name="username" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Palavra-passe</label>
+      <input type="password" name="password" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Entrar</button>
+    <a href="/register" class="btn btn-link">Criar nova conta</a>
+  </form>
+{% endblock %}

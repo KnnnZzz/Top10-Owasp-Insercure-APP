@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mt-5">Histórico de Compras</h3>
+<ul class="list-group">
+  {% if history %}
+    {% for name, price, pid in history %}
+      <li class="list-group-item bg-dark text-white">
+        <strong>{{ name }}</strong> — {{ price }} moedas
+      </li>
+    {% endfor %}
+  {% else %}
+    <li class="list-group-item bg-dark text-white">Nenhuma compra realizada ainda.</li>
+  {% endif %}
+</ul>
+  {% if request.args.get('error') %}
+  <div class="alert alert-danger alert-dismissible fade show">
+    {{ "Saldo insuficiente!" if request.args.get('error') == 'insufficient_funds' else "Erro na compra" }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endif %}
+
+  <h2 class="mb-4">Carteira</h2>
+  <div class="card bg-dark mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Saldo Disponível</h5>
+      <p class="display-4 text-warning">{{ balance }} moedas</p>
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addFundsModal">
+        <i class="bi bi-plus-circle"></i> Adicionar Créditos
+      </button>
+    </div>
+  </div>
+
+  <h3 class="mb-4">Loja de Itens</h3>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for item in items %}
+    <div class="col">
+      <div class="card h-100 bg-secondary text-white">
+        <div class="card-body text-center">
+          {% if item[1] == 'Premium Badge' %}
+            <i class="bi bi-star-fill text-warning" style="font-size: 3rem;"></i>
+          {% elif item[1] == 'Custom Emoji' %}
+            <i class="bi bi-emoji-smile text-primary" style="font-size: 3rem;"></i>
+          {% elif item[1] == 'Profile Color' %}
+            <i class="bi bi-palette text-success" style="font-size: 3rem;"></i>
+          {% elif item[1] == 'Animated Avatar' %}
+            <i class="bi bi-person-video2 text-info" style="font-size: 3rem;"></i>
+          {% elif item[1] == 'Exclusive Channel' %}
+            <i class="bi bi-lock-fill text-danger" style="font-size: 3rem;"></i>
+          {% endif %}
+          <h5 class="card-title mt-3">{{ item[1] }}</h5>
+          <p class="card-text">
+            {% if item[1] == 'Premium Badge' %}Badge especial no seu perfil
+            {% elif item[1] == 'Custom Emoji' %}Emoji personalizado
+            {% elif item[1] == 'Profile Color' %}Cor personalizada para seu perfil
+            {% elif item[1] == 'Animated Avatar' %}Avatar animado exclusivo
+            {% elif item[1] == 'Exclusive Channel' %}Canal privado exclusivo
+            {% endif %}
+          </p>
+          <p class="h4">{{ item[2] }} moedas</p>
+          <a href="/buy/{{ item[0] }}" class="btn btn-primary">Comprar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Add Funds Modal -->
+  <div class="modal fade" id="addFundsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Adicionar Créditos</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="addFundsForm" action="/add_funds" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Quantidade</label>
+              <select name="amount" class="form-select" required>
+                <option value="100">100 moedas</option>
+                <option value="500">500 moedas</option>
+                <option value="1000">1000 moedas</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Adicionar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  $(document).ready(function() {
+    $('#addFundsForm').on('submit', function(e) {
+      e.preventDefault();
+      var form = $(this);
+      $.ajax({
+        type: 'POST',
+        url: form.attr('action'),
+        data: form.serialize(),
+        success: function() {
+          $('#addFundsModal').modal('hide');
+          location.reload();
+        },
+        error: function() {
+          alert('Ocorreu um erro ao adicionar créditos');
+        }
+      });
+    });
+  });
+  </script>
+{% endblock %}

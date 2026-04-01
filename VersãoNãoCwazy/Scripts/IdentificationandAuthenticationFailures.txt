@@ -1,0 +1,9 @@
+#OWASP A07:2021 - Identification and Authentication Failures
+
+Roubar a sessão de admin e acessar o /admin_panel.
+
+    Login como admin, copiar cookie session.
+
+    Colar em outro browser como document.cookie = "session=..."
+
+   

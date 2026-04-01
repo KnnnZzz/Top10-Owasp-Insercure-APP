@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <h3>#{{ channel_name }}</h3>
+  <form id="message-form">
+    <textarea id="message-input" class="form-control mb-2" rows="3" placeholder="Escreve a tua mensagem..." required></textarea>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Enviar</button>
+  </form>
+  <div id="messages" class="bg-dark p-3 rounded" style="max-height: 500px; overflow-y: auto;">
+    {% for sender, content in messages %}
+      <p><strong>{{ sender }}</strong>: {{ content|safe }}</p>
+    {% endfor %}
+  </div>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const channelId = {{ channel_id }};
+    
+    // Join channel room
+    socket.emit('join_channel', {channel_id: channelId});
+    
+    // Handle form submission
+    document.getElementById('message-form').onsubmit = function(e) {
+      e.preventDefault();
+      const message = document.getElementById('message-input').value;
+      socket.emit('send_message', {
+        channel_id: channelId,
+        message: message
+      });
+      document.getElementById('message-input').value = '';
+    };
+    
+    // Receive new messages
+    socket.on('new_message', function(data) {
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML += `<p><strong>${data.sender}</strong>: ${data.content}</p>`;
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  </script>
+{% endblock %}
