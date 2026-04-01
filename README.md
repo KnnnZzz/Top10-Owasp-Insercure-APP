@@ -68,9 +68,3 @@ This project is strictly for educational purposes, security research, and captur
 **Pwned & Developed by [KnnnZzz](https://github.com/KnnnZzz)** 👾
 *Creating intentionally vulnerable apps so you don't have to.*
 
-#  _  __                 ____________          
-# | |/ /                |__  /__  / /         
-# | ' /_ __  _ __  _ __    / /   / / ____      
-# |  <| '_ \| '_ \| '_ \  / /   / / |_  /      
-# | . \ | | | | | | | | |/ /___/ /___/ /       
-# |_|\_\_| |_|_| |_|_| |_|____/____/___|    
